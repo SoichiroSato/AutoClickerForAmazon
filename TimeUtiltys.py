@@ -1,7 +1,7 @@
 import NTPClient
 import datetime
 from time import perf_counter
-import datetime
+
 
 class TimeUtiltys():
 

@@ -1,11 +1,13 @@
 import OperateAmazon 
 import NTPClient
+import Config
+import TimeUtiltys 
 import datetime
 from time import sleep
 import datetime
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-import TimeUtiltys 
+
         
 def main():
     #メイン処理
@@ -55,7 +57,7 @@ def main():
 
     options = webdriver.ChromeOptions()
     options.add_argument('--incognito') 
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(Config.Config.resource_path("./chromedriver/chromedriver.exe"),chrome_options=options)
     wait = WebDriverWait(driver, 30) #指定したdriverに対して最大で10秒間待つように設定する
 
     OperateAmazon.OperateAmazon.Login(driver,login,password,LOGIN_URL)

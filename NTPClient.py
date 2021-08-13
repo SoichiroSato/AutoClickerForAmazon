@@ -1,6 +1,5 @@
 import ntplib
 
-
 #正しい時刻を取得
 class NTPClient(object):
    def __init__(self, ntp_server_host ):
