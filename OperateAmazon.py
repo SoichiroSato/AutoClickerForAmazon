@@ -7,7 +7,7 @@ from selenium import webdriver
 #正しい時刻を取得
 class OperateAmazon():
    #ログイン処理
-    def Login(driver : webdriver.Chrome,login :str,password :str,loginUrl :str):
+    def Login(driver:webdriver.Chrome,login:str,password:str,loginUrl:str):
         driver.get(loginUrl)
         try:
             driver.find_element_by_name("email").send_keys(login)
@@ -25,9 +25,9 @@ class OperateAmazon():
             print("手動でログインする場合は「ログインしたままにする」にチェックをいれてください。")
 
     #購入処理
-    def Purchase(driver : webdriver.Chrome,purchaseGoodsUrl :str,checkColor :str,checkSize :str,quantity:str):
+    def Purchase(driver:webdriver.Chrome,purchaseGoodsUrl:str,checkColor:str,checkSize:str,quantity:str):
         
-        TimeUtiltys.TimeUtiltys .MakeSleep(0.88)
+        TimeUtiltys.TimeUtiltys.MakeSleep(0.88)
 
         driver.get(purchaseGoodsUrl)
 
