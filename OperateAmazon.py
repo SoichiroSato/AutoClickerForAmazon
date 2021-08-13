@@ -4,8 +4,6 @@ from selenium.webdriver.support.select import Select
 import datetime
 from selenium import webdriver
 
-
-
 #正しい時刻を取得
 class OperateAmazon():
    #ログイン処理
