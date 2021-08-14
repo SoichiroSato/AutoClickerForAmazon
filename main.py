@@ -2,15 +2,16 @@ import OperateAmazon
 import NTPClient
 import Config
 import TimeUtiltys 
+import CheckUtiltys
 import datetime
 from time import sleep
 import datetime
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
-        
+#Amazonの自動購入プログラム
 def main():
-    #メイン処理
+    
     print("・このプログラムは「今すぐ買う」ボタンがあるページのみ使えます。")
     print("・このプログラムはオプション指定なしの商品、衣類のみ使えます。")
     print("・カートの中身は空にしておいてください。")
@@ -22,15 +23,30 @@ def main():
     while True:   
         login = input("*ログインID(半角)>")
         if login != "":
-            break
+            if CheckUtiltys.CheckUtiltys.CheckMailAddress(login):
+                break
+            else:
+                print("ログインIDが不正です。")
+        else:
+            print("ログインID(半角)は必須です。")
     while True:  
         password = input("*ログインPassWord(半角)>")
         if password != "":
+            if CheckUtiltys.CheckUtiltys.CheckHankakuEisuziKigou(password):
                 break
+            else:
+                print("passwordが不正です。")
+        else:
+            print("ログインPassWord(半角)は必須です。")
     while True:
         purchaseGoodsUrl = input("*買いたい商品のURL>")
         if purchaseGoodsUrl != "":
+            if CheckUtiltys.CheckUtiltys.CheckURL(purchaseGoodsUrl,"www.amazon.co.jp"):
                 break
+            else:
+                print("AmazonのURLを入力してください。")
+        else:
+            print("買いたい商品のURLは必須です。")
 
     checkColor = input("カラーを選択する場合は左または上から順に0から半角数値で入力してください。未入力可。(例)一番左を選択の場合「0」>")
     checkSize = input("サイズを選択する場合は左または上から順に0から半角数値で入力してください。未入力可。(例)一番上を選択の場合「0」>")

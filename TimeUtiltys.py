@@ -2,17 +2,21 @@ import NTPClient
 import datetime
 from time import perf_counter
 
-
+#時間操作処理のクラス
 class TimeUtiltys():
 
     #指定時間まで待機させる
-    def MakeSleep(weitSec :float):
+    #weitSec : 指定時間
+    def MakeSleep(weitSec:float):
         until = perf_counter() + weitSec
         while perf_counter() < until:
             pass
 
     #Ntpサーバーの時間と指定時間の差を求める
-    def FindTheTimeDifference(ts :datetime ,ntpClient :NTPClient):
+    #ts : パソコンの時刻
+    #NTPClient : NTPクライアントオブジェクト
+    #return : 時刻のずれ
+    def FindTheTimeDifference(ts:datetime ,ntpClient:NTPClient):
         return ts.timestamp() - ntpClient.GetNowTime()
 
     
