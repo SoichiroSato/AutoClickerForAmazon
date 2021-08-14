@@ -33,7 +33,7 @@ class OperateAmazon():
     #purchaseGoodsUrl : 購入商品のURL
     #checkColor : 指定されたカラー情報
     #checkSize : 指定されたサイズ情報
-    #checkSize : 指定された個数
+    #quantity : 指定された個数
     def Purchase(driver:webdriver.Chrome,purchaseGoodsUrl:str,checkColor:str,checkSize:str,quantity:str):
         
         TimeUtiltys.TimeUtiltys.MakeSleep(0.88)
