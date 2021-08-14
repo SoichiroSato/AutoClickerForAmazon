@@ -4,9 +4,13 @@ from selenium.webdriver.support.select import Select
 import datetime
 from selenium import webdriver
 
-#正しい時刻を取得
+#Amazonの画面操作を行なうクラス
 class OperateAmazon():
-   #ログイン処理
+    #ログイン処理
+    #driver : chromeのドライバー
+    #login : ログインID
+    #password : ログインパスワード
+    #loginUrl : アマゾンのログイン画面のURL
     def Login(driver:webdriver.Chrome,login:str,password:str,loginUrl:str):
         driver.get(loginUrl)
         try:
@@ -25,6 +29,11 @@ class OperateAmazon():
             print("手動でログインする場合は「ログインしたままにする」にチェックをいれてください。")
 
     #購入処理
+    #driver : chromeのドライバー
+    #purchaseGoodsUrl : 購入商品のURL
+    #checkColor : 指定されたカラー情報
+    #checkSize : 指定されたサイズ情報
+    #checkSize : 指定された個数
     def Purchase(driver:webdriver.Chrome,purchaseGoodsUrl:str,checkColor:str,checkSize:str,quantity:str):
         
         TimeUtiltys.TimeUtiltys.MakeSleep(0.88)
@@ -92,5 +101,5 @@ class OperateAmazon():
                     return
         
         except Exception as e:
-            print("[error]Amazon以外のページか対応していないページです。あるいは何らかの不具合が発生してます")
+            print("[error]存在しないページか対応していないページです。あるいは何らかの不具合が発生してます")
 
