@@ -84,5 +84,10 @@ def main():
 
     sleep(5)
     driver.quit()
+
+    while True:
+        finish = input("終了するにはEnterキーを押してください")
+        if not finish:
+            break
     
 main()
