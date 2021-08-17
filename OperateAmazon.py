@@ -1,8 +1,10 @@
 import TimeUtiltys 
 import datetime
 from selenium.webdriver.support.select import Select
+from selenium.webdriver.remote.webelement import WebElement
 import datetime
 from selenium import webdriver
+from time import sleep
 
 #Amazonの画面操作を行なうクラス
 class OperateAmazon():
@@ -39,44 +41,51 @@ class OperateAmazon():
         TimeUtiltys.TimeUtiltys.MakeSleep(0.88)
 
         driver.get(purchaseGoodsUrl)
-
+        
         try:
             # カラー指定がある場合
             if checkColor != "":
                 try:
-                    index = int(checkColor) + 9
-                    driver.find_element_by_id("a-autoid-" + str(index) + "-announce").click()
+                    li:WebElement = driver.find_element_by_id("color_name_" + checkColor)
+                    li.find_element_by_tag_name("button").click()
                 except Exception as e:
                     print("[error]カラーが存在しないか選択できませんでした。")
+                    driver.quit()
                     return
 
             # サイズ指定がある場合
             if checkSize != "":
                 try:
-                    select = Select(driver.find_element_by_id('native_dropdown_selected_size_name'))
+                    select = Select(driver.find_element_by_id("native_dropdown_selected_size_name"))
                     select.select_by_index(int(checkSize))  # optionタグを選択状態に
                 except Exception as e:
+                    li:WebElement = driver.find_element_by_id("size_name_" + checkSize)
+                    li.find_element_by_tag_name("button").click()
+                except Exception as e:
                     print("[error]サイズが存在しないか選択できませんでした。")
+                    driver.quit()
                     return
 
             # 購入数指定がある場合
             if quantity != "":
                 try:
-                    select = Select(driver.find_element_by_id('quantity'))
+                    select = Select(driver.find_element_by_id("quantity"))
                     select.select_by_value(quantity)  # optionタグを選択状態に
                 except Exception as e:
                     print("[error]個数選択ができませんでした。")
+                    driver.quit()
                     return
 
             for _ in range(10):  # 最大10回実行。カラー、サイズ指定があるやつはすぐ表示されないことがあるため
                 try:
-                    driver.find_element_by_id('buy-now-button').click()  # 失敗しそうな処理
+                    driver.find_element_by_id("buy-now-button").click()  # 失敗しそうな処理
                 except Exception as e:
                     pass  
                 else:
                     break  # 失敗しなかった時はループを抜ける
             else:
                 print("[error]「今すぐ買う」ボタンが存在しないか押せません。")
+                driver.quit()
                 return
             
             try:
@@ -84,22 +93,28 @@ class OperateAmazon():
                 driver.find_element_by_name("placeYourOrder1").click()  
                 print(datetime.datetime.now())
                 print("[success]購入成功")
+                sleep(5)
+                driver.quit()
             except Exception as e:
                 # iframeになった場合
-                for _ in range(10):  # 最大10回実行
+                for _ in range(30):  # 最大30回実行
                     try:
-                        driver.switch_to.frame("turbo-checkout-iframe")
+                        driver.switch_to_frame("turbo-checkout-iframe")
                         driver.find_element_by_xpath('//*[@id="turbo-checkout-pyo-button"]').click()
                         print(datetime.datetime.now())
                         print("[success]購入成功")
+                        sleep(5)
+                        driver.quit()
                     except Exception as e:
                         pass  
                     else:
                         break  # 失敗しなかった時はループを抜ける
                 else:
                     print("[error]購入失敗")
+                    driver.quit()
                     return
         
         except Exception as e:
             print("[error]存在しないページか対応していないページです。あるいは何らかの不具合が発生してます")
+            driver.quit()
 
