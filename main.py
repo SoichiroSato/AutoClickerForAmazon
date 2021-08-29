@@ -4,7 +4,6 @@ import Config
 import TimeUtiltys 
 import CheckUtiltys
 import datetime
-import datetime
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
