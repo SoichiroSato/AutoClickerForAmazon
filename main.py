@@ -4,7 +4,7 @@ import Config
 import TimeUtiltys 
 import CheckUtiltys
 import datetime
-import datetime
+import stdiomask
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -12,6 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 def main():
     
     print("・このプログラムは購入時刻に「今すぐ買う」ボタンがあるページのみ使えます。")
+    print("・購入予定時刻の2分前に自動でログイン処理を行ない、購入予定時刻に自動で購入するツールです。")
     print("・カートの中身は空にしておいてください。")
     print("・このプログラムでの購入決済方法は一つにしておいてください。「クレジットカード」を推奨します。")
     print("・各入力項目は入力後に「Enter」キーを押してください。")
@@ -30,7 +31,7 @@ def main():
         else:
             print("ログインID(半角)は必須です。")
     while True:  
-        password = input("*ログインPassWord(半角)>")
+        password = stdiomask.getpass("*ログインPassWord(半角)>")
         if password != "":
             if CheckUtiltys.CheckUtiltys.CheckHankakuEisuziKigou(password):
                 break
