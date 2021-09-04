@@ -1,10 +1,10 @@
-import OperateAmazon 
-import NTPClient
-import Config
-import TimeUtiltys 
-import CheckUtiltys
-import datetime
 import stdiomask
+from OperateAmazon import OperateAmazon 
+from NTPClient import NTPClient
+from Config import Config
+from TimeUtiltys import TimeUtiltys 
+from CheckUtiltys import CheckUtiltys
+from datetime import datetime,date,timedelta
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -22,9 +22,9 @@ def main():
     while True:   
         login = input("*ログインID(半角)>")
         if login != "":
-            if CheckUtiltys.CheckUtiltys.CheckMailAddress(login):
+            if CheckUtiltys.CheckMailAddress(login):
                 break
-            elif CheckUtiltys.CheckUtiltys.CheckPhoneNumber(login):
+            elif CheckUtiltys.CheckPhoneNumber(login):
                 break
             else:
                 print("ログインIDが不正です。")
@@ -33,16 +33,16 @@ def main():
     while True:  
         password = stdiomask.getpass("*ログインPassWord(半角)>")
         if password != "":
-            if CheckUtiltys.CheckUtiltys.CheckHankakuEisuziKigou(password):
+            if CheckUtiltys.CheckHankakuEisuziKigou(password):
                 break
             else:
-                print("passwordが不正です。")
+                print("ログインpasswordが不正です。")
         else:
             print("ログインPassWord(半角)は必須です。")
     while True:
         purchaseGoodsUrl = input("*買いたい商品のURL>")
         if purchaseGoodsUrl != "":
-            if CheckUtiltys.CheckUtiltys.CheckURL(purchaseGoodsUrl,"www.amazon.co.jp"):
+            if CheckUtiltys.CheckURL(purchaseGoodsUrl,"www.amazon.co.jp"):
                 break
             else:
                 print("AmazonのURLを入力してください。")
@@ -55,11 +55,11 @@ def main():
 
     while True:
         try:
-            start = datetime.datetime.strptime(input("*購入時間(hh:mm)>") + ":00","%H:%M:%S").time()
-            before2Minites = datetime.datetime.combine(datetime.date.today(), start) - datetime.timedelta(minutes=2)
-            loginTime = datetime.datetime.combine(datetime.date.today(), before2Minites.time()) #購入予定時刻の2分前
-            before1Seconds = datetime.datetime.combine(datetime.date.today(), start) - datetime.timedelta(seconds=1)
-            purchaseTime = datetime.datetime.combine(datetime.date.today(), before1Seconds.time()) #購入予定時刻の1秒前
+            start = datetime.strptime(input("*購入時間(hh:mm)>") + ":00","%H:%M:%S").time()
+            before2Minites = datetime.combine(date.today(), start) - timedelta(minutes=2)
+            loginTime = datetime.combine(date.today(), before2Minites.time()) #購入予定時刻の2分前
+            before1Seconds = datetime.combine(date.today(), start) - timedelta(seconds=1)
+            purchaseTime = datetime.combine(date.today(), before1Seconds.time()) #購入予定時刻の1秒前
             break
         except Exception as e:
             print("[error]開始時刻が不正です。もう一度入力してください")
@@ -68,9 +68,9 @@ def main():
     print("ログイン処理実行時刻："+str(loginTime))
     print("購入処理実行時刻："+str(purchaseTime))
 
-    ntpClient = NTPClient.NTPClient("ntp.nict.jp")
+    ntpClient = NTPClient("ntp.nict.jp")
     
-    TimeUtiltys.TimeUtiltys.MakeSleep(TimeUtiltys.TimeUtiltys.FindTheTimeDifference(loginTime,ntpClient))
+    TimeUtiltys.MakeSleep(TimeUtiltys.FindTheTimeDifference(loginTime,ntpClient))
 
     options = webdriver.ChromeOptions()
 
@@ -78,7 +78,7 @@ def main():
     options.add_argument('--incognito') 
     options.add_argument('--start-maximized')
     
-    driver = webdriver.Chrome(Config.Config.resource_path("./chromedriver/chromedriver.exe"),chrome_options=options)
+    driver = webdriver.Chrome(Config.resource_path("./chromedriver/chromedriver.exe"),chrome_options=options)
    
     #指定したdriverに対して最大で30秒間待つように設定する
     WebDriverWait(driver, 30)
@@ -86,11 +86,11 @@ def main():
     #navigator.webdriver=true回避　botだとばれないようにする
     driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
     
-    OperateAmazon.OperateAmazon.Login(driver,login,password,LOGIN_URL)
+    OperateAmazon.Login(driver,login,password,LOGIN_URL)
     
-    TimeUtiltys.TimeUtiltys.MakeSleep(TimeUtiltys.TimeUtiltys.FindTheTimeDifference(purchaseTime,ntpClient))
+    TimeUtiltys.MakeSleep(TimeUtiltys.FindTheTimeDifference(purchaseTime,ntpClient))
 
-    OperateAmazon.OperateAmazon.Purchase(driver,purchaseGoodsUrl,checkColor,checkSize,quantity)
+    OperateAmazon.Purchase(driver,purchaseGoodsUrl,checkColor,checkSize,quantity)
 
     while True:
         finish = input("終了するにはEnterキーを押してください")

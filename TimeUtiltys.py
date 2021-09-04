@@ -1,5 +1,5 @@
 from NTPClient import NTPClient
-import datetime
+from datetime import datetime 
 from time import perf_counter
 
 #時間操作処理のクラス

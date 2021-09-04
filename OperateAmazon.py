@@ -1,5 +1,5 @@
-import TimeUtiltys 
-import datetime
+from TimeUtiltys import TimeUtiltys 
+from datetime import datetime
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.remote.webelement import WebElement
 import datetime
@@ -38,7 +38,7 @@ class OperateAmazon():
     #quantity : 指定された個数
     def Purchase(driver:webdriver.Chrome,purchaseGoodsUrl:str,checkColor:str,checkSize:str,quantity:str):
         
-        TimeUtiltys.TimeUtiltys.MakeSleep(0.88)
+        TimeUtiltys.MakeSleep(0.88)
 
         driver.get(purchaseGoodsUrl)
         
