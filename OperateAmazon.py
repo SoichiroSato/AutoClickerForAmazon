@@ -2,7 +2,6 @@ from TimeUtiltys import TimeUtiltys
 from datetime import datetime
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.remote.webelement import WebElement
-import datetime
 from selenium import webdriver
 from time import sleep
 
@@ -21,7 +20,7 @@ class OperateAmazon():
             driver.find_element_by_name("password").send_keys(password)
             driver.find_element_by_name("rememberMe").click()
             driver.find_element_by_id("signInSubmit").click()
-            print(datetime.datetime.now())
+            print(datetime.now())
             print("ログイン出来ました。念のため確認をお願いします。")
             print("ログイン出来ていない場合は手動でログインしてください。")
         except:
