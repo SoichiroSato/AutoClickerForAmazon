@@ -1,8 +1,8 @@
 from TimeUtiltys import TimeUtiltys 
 from datetime import datetime
+from selenium import webdriver
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.remote.webelement import WebElement
-from selenium import webdriver
 from time import sleep
 
 #Amazonの画面操作を行なうクラス
