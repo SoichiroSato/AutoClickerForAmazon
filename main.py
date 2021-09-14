@@ -1,22 +1,30 @@
 import stdiomask
 from OperateAmazon import OperateAmazon 
 from NTPClient import NTPClient
-from Config import Config
 from TimeUtiltys import TimeUtiltys 
 from CheckUtiltys import CheckUtiltys
 from datetime import datetime,date,timedelta
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
+from tkinter import messagebox,Tk
 
 #Amazonの自動購入プログラム
 def main():
     
-    print("・このプログラムは購入時刻に「今すぐ買う」ボタンがあるページのみ使えます。")
+    Tk().withdraw()
+    ret = messagebox.askokcancel("確認", "このプログラムはGoogleChromeを使用します。\r\nインストール済みの方は「OK｝を押してください。\r\nまだの方は「キャンセル」を押してください。") 
+    if ret == False :
+           return
+        
+    print("★プログラムの説明★")
     print("・購入予定時刻の2分前に自動でログイン処理を行ない、購入予定時刻に自動で購入するツールです。")
-    print("・カートの中身は空にしておいてください。")
-    print("・このプログラムでの購入決済方法は一つにしておいてください。「クレジットカード」を推奨します。")
+    print("・このツールは購入時刻に「今すぐ買う」ボタンが表示できるページのみ使えます。")
+    print("・あらかじめカートの中身は空にしておいてください。")
+    print("・あらかじめ購入決済方法は一つにしておいてください。「クレジットカード」を推奨します。")
     print("・各入力項目は入力後に「Enter」キーを押してください。")
     print("・[*]がある入力項目は必須です。ないものは任意で設定してください。")
+    print("　")
 
     LOGIN_URL = "https://www.amazon.co.jp/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp%2F%3Fref_%3Dnav_custrec_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=jpflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&"
     while True:   
@@ -70,18 +78,21 @@ def main():
 
     ntpClient = NTPClient("ntp.nict.jp")
     
-    TimeUtiltys.MakeSleep(TimeUtiltys.FindTheTimeDifference(loginTime,ntpClient))
-
-    options = webdriver.ChromeOptions()
-
+    #chromeのバージョンに合せたドライバーをインストールする
+    driverPath = ChromeDriverManager().install()
+    
     #シークレットブラウザ/画面サイズ最大/画像を読み込まない
+    options = webdriver.ChromeOptions()
     options.add_argument('--incognito') 
     options.add_argument('--start-maximized')
     options.add_argument('--blink-settings=imagesEnabled=false')
     options.add_argument('--lang=ja')
     options.add_argument("--proxy-server='direct://'")
     options.add_argument("--proxy-bypass-list=*")
-    driver = webdriver.Chrome(Config.resource_path("./chromedriver/chromedriver.exe"),chrome_options=options)
+
+    TimeUtiltys.MakeSleep(TimeUtiltys.FindTheTimeDifference(loginTime,ntpClient))
+
+    driver = webdriver.Chrome(driverPath,chrome_options=options)
    
     #指定したdriverに対して最大で30秒間待つように設定する
     WebDriverWait(driver, 30)
