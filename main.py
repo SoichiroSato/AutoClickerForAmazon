@@ -74,10 +74,13 @@ def main():
 
     options = webdriver.ChromeOptions()
 
-    #シークレットブラウザ/画面サイズ最大
+    #シークレットブラウザ/画面サイズ最大/画像を読み込まない
     options.add_argument('--incognito') 
     options.add_argument('--start-maximized')
-    
+    options.add_argument('--blink-settings=imagesEnabled=false')
+    options.add_argument('--lang=ja')
+    options.add_argument("--proxy-server='direct://'")
+    options.add_argument("--proxy-bypass-list=*")
     driver = webdriver.Chrome(Config.resource_path("./chromedriver/chromedriver.exe"),chrome_options=options)
    
     #指定したdriverに対して最大で30秒間待つように設定する
