@@ -8,6 +8,6 @@ class NTPClient(object):
 
     #NTPクライアントから実時刻を求める
     #return : 実時刻
-    def GetNowTime(self,timeformat = "%Y/%m/%d %H:%M:%S"):      
+    def GetNowTime(self):      
         res = self.ntp_client.request(self.ntp_server_host) 
         return res.tx_time     
