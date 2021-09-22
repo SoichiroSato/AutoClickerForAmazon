@@ -14,7 +14,7 @@ class CheckUtiltys():
     def CheckHankakuEisuziKigou(target:str):
         return re.match("^[a-zA-Z0-9!-/:-@¥[-`{-~]*$", target)
 
-    #メールアドレスかどうか確認する
+    #URLかどうか確認する
     #target : 対象の文字列
     #fqdn : 指定のFQDN
     #return : True(ok)/False(ng)  
