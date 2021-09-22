@@ -5,7 +5,6 @@ from TimeUtiltys import TimeUtiltys
 from CheckUtiltys import CheckUtiltys
 from datetime import datetime,date,timedelta
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from tkinter import messagebox,Tk
 
@@ -13,9 +12,8 @@ from tkinter import messagebox,Tk
 def main():
     
     Tk().withdraw()
-    ret = messagebox.askokcancel("確認", "このプログラムはGoogleChromeを使用します。\r\nインストール済みの方は「OK｝を押してください。\r\nまだの方は「キャンセル」を押してください。") 
-    if ret == False :
-           return
+    if not messagebox.askokcancel("確認", "このプログラムはGoogleChromeを使用します。\r\nインストール済みの方は「OK｝を押してください。\r\nまだの方は「キャンセル」を押してください。"):
+        return
         
     print("★プログラムの説明★")
     print("・購入予定時刻の2分前に自動でログイン処理を行ない、購入予定時刻に自動で購入するツールです。")
@@ -79,6 +77,7 @@ def main():
     ntpClient = NTPClient("ntp.nict.jp")
     
     #chromeのバージョンに合せたドライバーをインストールする
+    #まぁまぁ重いから先にやっておく
     driverPath = ChromeDriverManager().install()
     
     #シークレットブラウザ/画面サイズ最大/画像を読み込まない
@@ -90,18 +89,21 @@ def main():
     options.add_argument("--proxy-server='direct://'")
     options.add_argument("--proxy-bypass-list=*")
 
+    #ログイン処理実行時刻まで待機
     TimeUtiltys.MakeSleep(TimeUtiltys.FindTheTimeDifference(loginTime,ntpClient))
 
     driver = webdriver.Chrome(driverPath,chrome_options=options)
    
-    #指定したdriverに対して最大で30秒間待つように設定する
-    WebDriverWait(driver, 30)
+    #指定したdriverに対して最大で10秒間待つように設定する
+    driver.implicitly_wait(10)
 
     #navigator.webdriver=true回避　botだとばれないようにする
     driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
     
+    #ログイン処理
     OperateAmazon.Login(driver,login,password,LOGIN_URL)
     
+    #購入処理実行時刻まで待機
     TimeUtiltys.MakeSleep(TimeUtiltys.FindTheTimeDifference(purchaseTime,ntpClient))
 
     OperateAmazon.Purchase(driver,purchaseGoodsUrl,checkColor,checkSize,quantity)
