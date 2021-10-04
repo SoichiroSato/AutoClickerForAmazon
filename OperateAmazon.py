@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.remote.webelement import WebElement
 from time import sleep
+from sys import exit
 
 #Amazonの画面操作を行なうクラス
 class OperateAmazon():
@@ -15,7 +16,7 @@ class OperateAmazon():
     def Login(driver:webdriver.Chrome,login:str,password:str,loginUrl:str,headless:str):
         driver.get(loginUrl)
         try:
-            certificationMail = False
+            certification = False
             driver.find_element_by_name("email").send_keys(login)
             driver.find_element_by_id("continue").click()
             driver.find_element_by_name("password").send_keys(password)
@@ -23,11 +24,18 @@ class OperateAmazon():
             driver.find_element_by_id("signInSubmit").click()
             
             try:
+                driver.find_element_by_class_name("a-alert-heading")
+            except Exception as e:
+                pass
+            else:
+                raise Exception()
+
+            try:
                 span:WebElement = driver.find_element_by_id("nav-link-accountList-nav-line-1")
                 print("アカウント名:" + span.text[:-2])
             except Exception as e:
-                certificationMail = True
-                raise Exception("Amazonから認証メールが届いている場合は購入処理実行時刻前までに承認をお願いします。")
+                certification= True
+                raise Exception()
                 
             print(datetime.now())
             print("ログイン出来ました。")
@@ -36,15 +44,29 @@ class OperateAmazon():
             if headless == "n":
                 print("購入処理実行時刻前までに手動でやり直してください。")
             else:
-                if certificationMail :
-                    print(e)
+                if certification :
+                     while True:  
+                        print("Amazonから認証メールが届いてますか？")
+                        certificationMail= input("*y/n>")
+                        if certificationMail == "y" or certificationMail == "n":
+                            break
+                        else:
+                            print("yかnを入力してください")
+
+                     if certificationMail == "y":
+                        print("購入時刻までに認証処理を済ませておいてください。")
+                     else:
+                        while True:
+                            finish = input("Enterキーを押して、最初からやり直してください。")
+                            if not finish:
+                                exit()
+
                 else:
                     while True:
                         finish = input("Enterキーを押して、最初からやり直してください。")
                         if not finish:
-                            break
-                        else:
                             exit()
+                        
         
             
 
@@ -114,7 +136,7 @@ class OperateAmazon():
                 driver.implicitly_wait(0)
                 li:WebElement = driver.find_element_by_id("newAccordionRow")
                 li.find_element_by_class_name("a-accordion-row-a11y").click()
-                driver.implicitly_wait(10)
+                driver.implicitly_wait(5)
             except Exception as e:
                 # なかったらスルー
                 pass
