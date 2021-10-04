@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.remote.webelement import WebElement
 from time import sleep
+from sys import exit
 
 #Amazonの画面操作を行なうクラス
 class OperateAmazon():
@@ -12,22 +13,62 @@ class OperateAmazon():
     #login : ログインID
     #password : ログインパスワード
     #loginUrl : アマゾンのログイン画面のURL
-    def Login(driver:webdriver.Chrome,login:str,password:str,loginUrl:str):
+    def Login(driver:webdriver.Chrome,login:str,password:str,loginUrl:str,headless:str):
         driver.get(loginUrl)
         try:
+            certification = False
             driver.find_element_by_name("email").send_keys(login)
             driver.find_element_by_id("continue").click()
             driver.find_element_by_name("password").send_keys(password)
             driver.find_element_by_name("rememberMe").click()
             driver.find_element_by_id("signInSubmit").click()
+            
+            try:
+                driver.find_element_by_class_name("a-alert-heading")
+            except Exception as e:
+                pass
+            else:
+                raise Exception()
+
+            try:
+                span:WebElement = driver.find_element_by_id("nav-link-accountList-nav-line-1")
+                print("アカウント名:" + span.text[:-2])
+            except Exception as e:
+                certification= True
+                raise Exception()
+                
             print(datetime.now())
-            print("ログイン出来ました。念のため確認をお願いします。")
-            print("ログイン出来ていない場合は手動でログインしてください。")
-        except:
+            print("ログイン出来ました。")
+        except Exception as e:
             print("ログインできませんでした。")
-            print("購入処理実行時刻前までに手動でやり直してください。")
-        finally:
-            print("手動でログインする場合は「ログインしたままにする」にチェックをいれてください。")
+            if headless == "n":
+                print("購入処理実行時刻前までに手動でやり直してください。")
+            else:
+                if certification :
+                     while True:  
+                        print("Amazonから認証メールが届いてますか？")
+                        certificationMail= input("*y/n>")
+                        if certificationMail == "y" or certificationMail == "n":
+                            break
+                        else:
+                            print("yかnを入力してください")
+
+                     if certificationMail == "y":
+                        print("購入時刻までに認証処理を済ませておいてください。")
+                     else:
+                        while True:
+                            finish = input("Enterキーを押して、最初からやり直してください。")
+                            if not finish:
+                                exit()
+
+                else:
+                    while True:
+                        finish = input("Enterキーを押して、最初からやり直してください。")
+                        if not finish:
+                            exit()
+                        
+        
+            
 
     #購入処理
     #driver : chromeのドライバー
@@ -92,8 +133,10 @@ class OperateAmazon():
             
             # 通常の注文か定期おとく便の選択が出てきたら通常の注文を選択する
             try:
+                driver.implicitly_wait(0)
                 li:WebElement = driver.find_element_by_id("newAccordionRow")
                 li.find_element_by_class_name("a-accordion-row-a11y").click()
+                driver.implicitly_wait(5)
             except Exception as e:
                 # なかったらスルー
                 pass
