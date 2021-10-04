@@ -12,22 +12,41 @@ class OperateAmazon():
     #login : ログインID
     #password : ログインパスワード
     #loginUrl : アマゾンのログイン画面のURL
-    def Login(driver:webdriver.Chrome,login:str,password:str,loginUrl:str):
+    def Login(driver:webdriver.Chrome,login:str,password:str,loginUrl:str,headless:str):
         driver.get(loginUrl)
         try:
+            certificationMail = False
             driver.find_element_by_name("email").send_keys(login)
             driver.find_element_by_id("continue").click()
             driver.find_element_by_name("password").send_keys(password)
             driver.find_element_by_name("rememberMe").click()
             driver.find_element_by_id("signInSubmit").click()
+            
+            try:
+                span:WebElement = driver.find_element_by_id("nav-link-accountList-nav-line-1")
+                print("アカウント名:" + span.text[:-2])
+            except Exception as e:
+                certificationMail = True
+                raise Exception("Amazonから認証メールが届いている場合は購入処理実行時刻前までに承認をお願いします。")
+                
             print(datetime.now())
-            print("ログイン出来ました。念のため確認をお願いします。")
-            print("ログイン出来ていない場合は手動でログインしてください。")
-        except:
+            print("ログイン出来ました。")
+        except Exception as e:
             print("ログインできませんでした。")
-            print("購入処理実行時刻前までに手動でやり直してください。")
-        finally:
-            print("手動でログインする場合は「ログインしたままにする」にチェックをいれてください。")
+            if headless == "n":
+                print("購入処理実行時刻前までに手動でやり直してください。")
+            else:
+                if certificationMail :
+                    print(e)
+                else:
+                    while True:
+                        finish = input("Enterキーを押して、最初からやり直してください。")
+                        if not finish:
+                            break
+                        else:
+                            exit()
+        
+            
 
     #購入処理
     #driver : chromeのドライバー
@@ -92,8 +111,10 @@ class OperateAmazon():
             
             # 通常の注文か定期おとく便の選択が出てきたら通常の注文を選択する
             try:
+                driver.implicitly_wait(0)
                 li:WebElement = driver.find_element_by_id("newAccordionRow")
                 li.find_element_by_class_name("a-accordion-row-a11y").click()
+                driver.implicitly_wait(10)
             except Exception as e:
                 # なかったらスルー
                 pass

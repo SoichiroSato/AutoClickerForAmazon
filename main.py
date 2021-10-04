@@ -45,6 +45,14 @@ def main():
                 print("ログインpasswordが不正です。")
         else:
             print("ログインPassWord(半角)は必須です。")
+    while True:  
+        print("高速版を使用しますか？")
+        print("初回起動は通常版をオススメします。")
+        headless= input("*y/n>")
+        if headless == "y" or headless == "n":
+            break
+        else:
+            print("yかnを入力してください")
     while True:
         purchaseGoodsUrl = input("*買いたい商品のURL>")
         if purchaseGoodsUrl != "":
@@ -88,6 +96,9 @@ def main():
     options.add_argument('--lang=ja')
     options.add_argument("--proxy-server='direct://'")
     options.add_argument("--proxy-bypass-list=*")
+    #高速版の場合はヘッダーレス
+    if headless =="y":
+        options.add_argument("--headless")
 
     #ログイン処理実行時刻まで待機
     TimeUtiltys.MakeSleep(TimeUtiltys.FindTheTimeDifference(loginTime,ntpClient))
@@ -101,7 +112,7 @@ def main():
     driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
     
     #ログイン処理
-    OperateAmazon.Login(driver,login,password,LOGIN_URL)
+    OperateAmazon.Login(driver,login,password,LOGIN_URL,headless)
     
     #購入処理実行時刻まで待機
     TimeUtiltys.MakeSleep(TimeUtiltys.FindTheTimeDifference(purchaseTime,ntpClient))
