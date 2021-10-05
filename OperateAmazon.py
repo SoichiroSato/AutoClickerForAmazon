@@ -115,10 +115,12 @@ class OperateAmazon():
                 
             
             # 通常の注文か定期おとく便の選択が出てきたら通常の注文を選択する
+            driver.implicitly_wait(0)
             if len(driver.find_elements_by_id("newAccordionRow")) > 0:
                 li:WebElement = driver.find_element_by_id("newAccordionRow")
                 li.find_element_by_class_name("a-accordion-row-a11y").click()
-                         
+            
+            driver.implicitly_wait(10)             
             if len(driver.find_elements_by_id("buy-now-button")) > 0:
                 driver.find_element_by_id("buy-now-button").click()  # 失敗しそうな処理
             else:
