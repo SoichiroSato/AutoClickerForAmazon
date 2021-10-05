@@ -23,23 +23,25 @@ class OperateAmazon():
             driver.find_element_by_name("rememberMe").click()
             driver.find_element_by_id("signInSubmit").click()
             
-            try:
-                driver.find_element_by_class_name("a-alert-heading")
-            except Exception as e:
-                pass
-            else:
+            driver.implicitly_wait(0)
+            if len(driver.find_elements_by_class_name("a-alert-heading")) > 0:
                 raise Exception()
+            else:
+                driver.implicitly_wait(10)
 
-            try:
+            driver.implicitly_wait(0)          
+            if len(driver.find_elements_by_id("nav-link-accountList-nav-line-1")) > 0:
                 span:WebElement = driver.find_element_by_id("nav-link-accountList-nav-line-1")
                 print("アカウント名:" + span.text[:-2])
-            except Exception as e:
+                driver.implicitly_wait(10)
+            else:
                 certification= True
                 raise Exception()
-                
+                           
             print(datetime.now())
             print("ログイン出来ました。")
         except Exception as e:
+            print(e)
             print("ログインできませんでした。")
             if headless == "n":
                 print("購入処理実行時刻前までに手動でやり直してください。")
@@ -132,15 +134,13 @@ class OperateAmazon():
                     return
             
             # 通常の注文か定期おとく便の選択が出てきたら通常の注文を選択する
-            try:
-                driver.implicitly_wait(0)
+            driver.implicitly_wait(0)
+            if len(driver.find_elements_by_id("newAccordionRow")) > 0:
                 li:WebElement = driver.find_element_by_id("newAccordionRow")
                 li.find_element_by_class_name("a-accordion-row-a11y").click()
-                driver.implicitly_wait(5)
-            except Exception as e:
-                # なかったらスルー
-                pass
-
+            else:
+                driver.implicitly_wait(10)
+                
             for _ in range(10):  # 最大10回実行。カラー、サイズ指定があるやつはすぐ表示されないことがあるため
                 try:
                     driver.find_element_by_id("buy-now-button").click()  # 失敗しそうな処理
