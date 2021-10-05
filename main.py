@@ -7,6 +7,7 @@ from datetime import datetime,date,timedelta
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from tkinter import messagebox,Tk
+from sys import exit
 
 #Amazonの自動購入プログラム
 def main():
@@ -105,8 +106,8 @@ def main():
 
     driver = webdriver.Chrome(driverPath,chrome_options=options)
    
-    #指定したdriverに対して最大で5秒間待つように設定する
-    driver.implicitly_wait(5)
+    #指定したdriverに対して最大で10秒間待つように設定する
+    driver.implicitly_wait(10)
 
     #navigator.webdriver=true回避　botだとばれないようにする
     driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
@@ -123,5 +124,7 @@ def main():
         finish = input("終了するにはEnterキーを押してください")
         if not finish:
             break
-    
-main()
+    exit()
+
+if __name__=='__main__':       
+    main()

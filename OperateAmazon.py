@@ -1,3 +1,4 @@
+from logging import exception
 from TimeUtiltys import TimeUtiltys 
 from datetime import datetime
 from selenium import webdriver
@@ -23,25 +24,21 @@ class OperateAmazon():
             driver.find_element_by_name("rememberMe").click()
             driver.find_element_by_id("signInSubmit").click()
             
-            driver.implicitly_wait(0)
-            if len(driver.find_elements_by_class_name("a-alert-heading")) > 0:
-                raise Exception()
-            else:
-                driver.implicitly_wait(10)
-
-            driver.implicitly_wait(0)          
+            
+                    
             if len(driver.find_elements_by_id("nav-link-accountList-nav-line-1")) > 0:
                 span:WebElement = driver.find_element_by_id("nav-link-accountList-nav-line-1")
                 print("アカウント名:" + span.text[:-2])
-                driver.implicitly_wait(10)
             else:
-                certification= True
-                raise Exception()
+                if len(driver.find_elements_by_id("auth-error-message-box")) > 0:
+                    raise Exception()
+                else:
+                    certification= True
+                    raise Exception()
                            
             print(datetime.now())
             print("ログイン出来ました。")
         except Exception as e:
-            print(e)
             print("ログインできませんでした。")
             if headless == "n":
                 print("購入処理実行時刻前までに手動でやり直してください。")
@@ -62,14 +59,11 @@ class OperateAmazon():
                             finish = input("Enterキーを押して、最初からやり直してください。")
                             if not finish:
                                 exit()
-
                 else:
                     while True:
                         finish = input("Enterキーを押して、最初からやり直してください。")
                         if not finish:
-                            exit()
-                        
-        
+                            exit()                      
             
 
     #購入処理
@@ -87,14 +81,9 @@ class OperateAmazon():
         try:
             # カラー指定がある場合
             if checkColor != "":
-                for _ in range(5):
-                    try:
-                        li:WebElement = driver.find_element_by_id("color_name_" + checkColor)
-                        li.find_element_by_tag_name("button").click()
-                    except Exception as e:
-                        pass  
-                    else:
-                        break  # 失敗しなかった時はループを抜ける
+                if len(driver.find_elements_by_id("color_name_" + checkColor)) > 0:
+                    li:WebElement = driver.find_element_by_id("color_name_" + checkColor)
+                    li.find_element_by_tag_name("button").click()
                 else:
                     print("[error]カラーが存在しないか選択できませんでした。")
                     driver.quit()
@@ -102,83 +91,66 @@ class OperateAmazon():
 
             # サイズ指定がある場合
             if checkSize != "":
-                for _ in range(5):
-                    try:
-                        select = Select(driver.find_element_by_id("native_dropdown_selected_size_name"))
-                        select.select_by_index(int(checkSize))  # optionタグを選択状態に
-                        break
-                    except Exception as e:
-                        li:WebElement = driver.find_element_by_id("size_name_" + checkSize)
-                        li.find_element_by_tag_name("button").click()
-                        break
-                    except Exception as e:
-                        pass
+                if len(driver.find_elements_by_id("native_dropdown_selected_size_name")) > 0:
+                    select = Select(driver.find_element_by_id("native_dropdown_selected_size_name"))
+                    select.select_by_index(int(checkSize))  # optionタグを選択状態に
+                elif len(driver.find_elements_by_id("size_name_" + checkSize)) > 0:
+                    li:WebElement = driver.find_element_by_id("size_name_" + checkSize)
+                    li.find_element_by_tag_name("button").click()
                 else:
                     print("[error]サイズが存在しないか選択できませんでした。")
                     driver.quit()
                     return
+                
 
             # 購入数指定がある場合
             if quantity != "":
-                for _ in range(5):
-                    try:
-                        select = Select(driver.find_element_by_id("quantity"))
-                        select.select_by_value(quantity)  # optionタグを選択状態に
-                    except Exception as e:
-                        pass  
-                    else:
-                        break  # 失敗しなかった時はループを抜ける
+                if len(driver.find_elements_by_id("quantity")) > 0:
+                    select = Select(driver.find_element_by_id("quantity"))
+                    select.select_by_value(quantity)  # optionタグを選択状態に
                 else:
                     print("[error]個数選択ができませんでした。")
                     driver.quit()
                     return
+                
             
             # 通常の注文か定期おとく便の選択が出てきたら通常の注文を選択する
-            driver.implicitly_wait(0)
             if len(driver.find_elements_by_id("newAccordionRow")) > 0:
                 li:WebElement = driver.find_element_by_id("newAccordionRow")
                 li.find_element_by_class_name("a-accordion-row-a11y").click()
-            else:
-                driver.implicitly_wait(10)
-                
-            for _ in range(10):  # 最大10回実行。カラー、サイズ指定があるやつはすぐ表示されないことがあるため
-                try:
-                    driver.find_element_by_id("buy-now-button").click()  # 失敗しそうな処理
-                except Exception as e:
-                    pass  
-                else:
-                    break  # 失敗しなかった時はループを抜ける
+                         
+            if len(driver.find_elements_by_id("buy-now-button")) > 0:
+                driver.find_element_by_id("buy-now-button").click()  # 失敗しそうな処理
             else:
                 print("[error]「今すぐ買う」ボタンが存在しないか押せません。")
                 driver.quit()
                 return
-            
-            for _ in range(30):  # 最大30回実行
-                try:
-                    # 画面遷移した場合
-                    driver.find_element_by_name("placeYourOrder1").click()  
-                    print(datetime.now())
-                    print("[success]購入成功")
-                    sleep(5)
-                    driver.quit()
-                    break
-                except Exception as e:
-                    # iframeになった場合                     
+        
+            if len(driver.find_elements_by_name("placeYourOrder1")) > 0:
+                # 画面遷移した場合
+                driver.find_element_by_name("placeYourOrder1").click()  
+                OperateAmazon.SuccessProsess(driver)
+            else:
+                # iframeになった場合
+                try:                     
                     driver.switch_to_frame("turbo-checkout-iframe")
                     driver.find_element_by_xpath('//*[@id="turbo-checkout-pyo-button"]').click()
-                    print(datetime.now())
-                    print("[success]購入成功")
-                    sleep(5)
-                    driver.quit()
-                    break
+                    OperateAmazon.SuccessProsess(driver)
                 except Exception as e:
-                    pass           
-            else:
-                print("[error]購入失敗")
-                driver.quit()
-                return
+                    print("[error]購入失敗")
+                    driver.quit()
+                    return                  
         
         except Exception as e:
             print("[error]存在しないページか対応していないページです。あるいは何らかの不具合が発生してます")
             driver.quit()
+
+    #購入成功時の処理
+    #driver : chromeのドライバー
+    def SuccessProsess(driver:webdriver):
+        print(datetime.now())
+        print("[success]購入成功")
+        sleep(5)
+        driver.quit()
+        
 
