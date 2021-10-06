@@ -26,6 +26,16 @@ def main():
     print("　")
 
     LOGIN_URL = "https://www.amazon.co.jp/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp%2F%3Fref_%3Dnav_custrec_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=jpflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&"
+
+    while True:  
+        print("高速版を使用しますか？")
+        print("初回起動は通常版をオススメします。")
+        headless= input("*y/n>")
+        if headless == "y" or headless == "n":
+            break
+        else:
+            print("yかnを入力してください")
+
     while True:   
         login = input("*ログインID(半角)>")
         if login != "":
@@ -37,6 +47,7 @@ def main():
                 print("ログインIDが不正です。")
         else:
             print("ログインID(半角)は必須です。")
+            
     while True:  
         password = stdiomask.getpass("*ログインPassWord(半角)>")
         if password != "":
@@ -46,14 +57,7 @@ def main():
                 print("ログインpasswordが不正です。")
         else:
             print("ログインPassWord(半角)は必須です。")
-    while True:  
-        print("高速版を使用しますか？")
-        print("初回起動は通常版をオススメします。")
-        headless= input("*y/n>")
-        if headless == "y" or headless == "n":
-            break
-        else:
-            print("yかnを入力してください")
+    
     while True:
         purchaseGoodsUrl = input("*買いたい商品のURL>")
         if purchaseGoodsUrl != "":
