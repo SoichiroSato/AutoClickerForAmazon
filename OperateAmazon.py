@@ -1,4 +1,3 @@
-from logging import exception
 from TimeUtiltys import TimeUtiltys 
 from datetime import datetime
 from selenium import webdriver
@@ -23,15 +22,16 @@ class OperateAmazon():
             driver.find_element_by_name("password").send_keys(password)
             driver.find_element_by_name("rememberMe").click()
             driver.find_element_by_id("signInSubmit").click()
-            
-            
-                    
+           
+            #ログインできてトップ画面にアカウント名が表示されているか確認
             if len(driver.find_elements_by_id("nav-link-accountList-nav-line-1")) > 0:
                 span:WebElement = driver.find_element_by_id("nav-link-accountList-nav-line-1")
                 print("アカウント名:" + span.text[:-2])
             else:
+                #リクエストエラー
                 if len(driver.find_elements_by_id("auth-error-message-box")) > 0:
                     raise Exception()
+                #認証エラー
                 else:
                     certification= True
                     raise Exception()
