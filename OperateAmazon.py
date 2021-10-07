@@ -84,6 +84,9 @@ class OperateAmazon():
                 if len(driver.find_elements_by_id("color_name_" + checkColor)) > 0:
                     li:WebElement = driver.find_element_by_id("color_name_" + checkColor)
                     li.find_element_by_tag_name("button").click()
+                elif len(driver.find_elements_by_id("native_dropdown_selected_color_name")) > 0:
+                    select = Select(driver.find_element_by_id("native_dropdown_selected_color_name"))
+                    select.select_by_index(int(checkColor))  # optionタグを選択状態に
                 else:
                     print("[error]カラーが存在しないか選択できませんでした。")
                     driver.quit()
@@ -128,17 +131,18 @@ class OperateAmazon():
                 driver.quit()
                 return
         
-            if len(driver.find_elements_by_name("placeYourOrder1")) > 0:
-                # 画面遷移した場合
-                driver.find_element_by_name("placeYourOrder1").click()  
+            
+            # iframeになった場合
+            try:                     
+                driver.switch_to_frame("turbo-checkout-iframe")
+                driver.find_element_by_xpath('//*[@id="turbo-checkout-pyo-button"]').click()
                 OperateAmazon.SuccessProsess(driver)
-            else:
-                # iframeになった場合
-                try:                     
-                    driver.switch_to_frame("turbo-checkout-iframe")
-                    driver.find_element_by_xpath('//*[@id="turbo-checkout-pyo-button"]').click()
+            except Exception as e:
+                if len(driver.find_elements_by_name("placeYourOrder1")) > 0:
+                    # 画面遷移した場合
+                    driver.find_element_by_name("placeYourOrder1").click()  
                     OperateAmazon.SuccessProsess(driver)
-                except Exception as e:
+                else:
                     print("[error]購入失敗")
                     driver.quit()
                     return                  
