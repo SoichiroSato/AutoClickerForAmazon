@@ -13,18 +13,23 @@ class OperateAmazon():
     #login : ログインID
     #password : ログインパスワード
     #loginUrl : アマゾンのログイン画面のURL
-    def Login(driver:webdriver.Chrome,login:str,password:str,loginUrl:str,headless:str):
-        driver.get(loginUrl)
+    def Login(driver:webdriver.Chrome,login:str,password:str,headless:str):
+        
         try:
+            driver.get("https://www.amazon.co.jp/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp%2F%3Fref_%3Dnav_custrec_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=jpflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&")
+            #navigator.webdriver=true回避　botだとばれないようにする
+            driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
             certification = False
             driver.find_element_by_name("email").send_keys(login)
             driver.find_element_by_id("continue").click()
+            driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
             driver.find_element_by_name("password").send_keys(password)
             driver.find_element_by_name("rememberMe").click()
             driver.find_element_by_id("signInSubmit").click()
            
             #ログインできてトップ画面にアカウント名が表示されているか確認
             if len(driver.find_elements_by_id("nav-link-accountList-nav-line-1")) > 0:
+                driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
                 span:WebElement = driver.find_element_by_id("nav-link-accountList-nav-line-1")
                 print("アカウント名:" + span.text[:-2])
             else:
@@ -73,12 +78,15 @@ class OperateAmazon():
     #checkSize : 指定されたサイズ情報
     #quantity : 指定された個数
     def Purchase(driver:webdriver.Chrome,purchaseGoodsUrl:str,checkColor:str,checkSize:str,quantity:str):
-        
-        TimeUtiltys.MakeSleep(0.88)
 
-        driver.get(purchaseGoodsUrl)
-        
         try:
+            TimeUtiltys.MakeSleep(0.88)
+
+            driver.get(purchaseGoodsUrl)
+                
+            #navigator.webdriver=true回避　botだとばれないようにする
+            driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
+
             # カラー指定がある場合
             if checkColor != "":
                 if len(driver.find_elements_by_id("color_name_" + checkColor)) > 0:
@@ -140,6 +148,8 @@ class OperateAmazon():
             except Exception as e:
                 if len(driver.find_elements_by_name("placeYourOrder1")) > 0:
                     # 画面遷移した場合
+                    #navigator.webdriver=true回避　botだとばれないようにする
+                    driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
                     driver.find_element_by_name("placeYourOrder1").click()  
                     OperateAmazon.SuccessProsess(driver)
                 else:
