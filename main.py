@@ -25,8 +25,6 @@ def main():
     print("・[*]がある入力項目は必須です。ないものは任意で設定してください。")
     print("　")
 
-    LOGIN_URL = "https://www.amazon.co.jp/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp%2F%3Fref_%3Dnav_custrec_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=jpflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&"
-
     while True:  
         print("高速版を使用しますか？")
         print("初回起動は通常版をオススメします。")
@@ -112,12 +110,9 @@ def main():
    
     #指定したdriverに対して最大で10秒間待つように設定する
     driver.implicitly_wait(10)
-
-    #navigator.webdriver=true回避　botだとばれないようにする
-    driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
-    
+   
     #ログイン処理
-    OperateAmazon.Login(driver,login,password,LOGIN_URL,headless)
+    OperateAmazon.Login(driver,login,password,headless)
     
     #購入処理実行時刻まで待機
     TimeUtiltys.MakeSleep(TimeUtiltys.FindTheTimeDifference(purchaseTime,ntpClient))
