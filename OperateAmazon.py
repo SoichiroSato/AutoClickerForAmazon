@@ -26,10 +26,10 @@ class OperateAmazon():
             driver.find_element_by_name("password").send_keys(password)
             driver.find_element_by_name("rememberMe").click()
             driver.find_element_by_id("signInSubmit").click()
-           
+            driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
+
             #ログインできてトップ画面にアカウント名が表示されているか確認
             if len(driver.find_elements_by_id("nav-link-accountList-nav-line-1")) > 0:
-                driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
                 span:WebElement = driver.find_element_by_id("nav-link-accountList-nav-line-1")
                 print("アカウント名:" + span.text[:-2])
             else:
