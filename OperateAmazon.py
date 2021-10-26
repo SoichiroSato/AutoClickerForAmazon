@@ -16,10 +16,12 @@ class OperateAmazon():
     def Login(driver:webdriver.Chrome,login:str,password:str,headless:str):
         
         try:
-            driver.get("https://www.amazon.co.jp/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp%2F%3Fref_%3Dnav_custrec_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=jpflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&")
+            certification = False
+            driver.get("https://www.amazon.co.jp/")
             #navigator.webdriver=true回避　botだとばれないようにする
             driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
-            certification = False
+            driver.find_element_by_id("nav-link-accountList").click()
+            driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
             driver.find_element_by_name("email").send_keys(login)
             driver.find_element_by_id("continue").click()
             driver.execute_script('const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;')
